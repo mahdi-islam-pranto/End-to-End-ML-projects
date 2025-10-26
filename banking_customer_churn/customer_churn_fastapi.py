@@ -71,10 +71,14 @@ async def predict(input_data: InputData):
     else:
         prediction = 'Potential customer'
 
+    # get the probability of the prediction
+    customer_prediction_proba = model.predict_proba(input_customer_df)
+
     # output of the API
     return JSONResponse(
         status_code=200,
         content={"prediction_value": customer_prediction.tolist()[0],
-                 "prediction": prediction
+                 "prediction": prediction,
+                 "probability": customer_prediction_proba.tolist()[0][1]
                  })
     
