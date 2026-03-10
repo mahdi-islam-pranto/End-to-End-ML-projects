@@ -81,4 +81,3 @@ async def predict(input_data: InputData):
                  "prediction": prediction,
                  "probability": customer_prediction_proba.tolist()[0][1]
                  })
-    
