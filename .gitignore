@@ -1,0 +1,5 @@
+# ignore BanglaLekha-Isolated folder and model files
+BanglaLekha-Isolated/
+# all Images are in this folder, so we can ignore the whole folder
+Images/
+# ignore model files
