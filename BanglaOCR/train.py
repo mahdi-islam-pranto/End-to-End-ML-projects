@@ -8,6 +8,7 @@ from tensorflow.keras.layers import (
 )
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
+import pickle
 
 
 # Optional: force CPU only
@@ -16,7 +17,8 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 BASE_DIR = Path(__file__).resolve().parent
 data_dir = BASE_DIR/"BanglaLekha-Isolated"/"Images_Sorborno"
 
-batch_size = 32
+# batch_size = 32
+batch_size = 16
 img_size = (64, 64)
 seed = 42
 
@@ -105,3 +107,25 @@ model.compile(
 )
 
 model.summary()
+
+# Train the model
+history = model.fit(
+    train_ds,
+    epochs=1,
+    validation_data=val_ds,
+    verbose=1
+)
+
+# save the model
+model.save("bangla_ocr_model.keras")
+
+# save model as pickle file
+
+with open("bangla_ocr_model.pkl", "wb") as f:
+    pickle.dump(model, f)
+    
+print("Model saved as bangla_ocr_model.pkl")
+    
+# check model accuracy on test set
+loss, acc = model.evaluate(val_ds)
+print("Validation Accuracy:", acc * 100)
