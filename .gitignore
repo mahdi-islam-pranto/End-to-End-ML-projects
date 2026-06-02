@@ -3,3 +3,7 @@ BanglaLekha-Isolated/
 # all Images are in this folder, so we can ignore the whole folder
 Images/
 # ignore model files
+.venv/
+*.h5
+*.keras
+*.pkl
