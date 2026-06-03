@@ -1,6 +1,7 @@
 import os
 import json
 from pathlib import Path
+import pickle
 
 import mlflow
 import mlflow.keras
@@ -25,7 +26,8 @@ data_dir = BASE_DIR / "BanglaLekha-Isolated" / "Images_Sorborno"
 BATCH_SIZE  = 16
 IMG_SIZE    = (64, 64)
 SEED        = 42
-EPOCHS      = 20          # bump up; early stopping will halt when needed
+# EPOCHS      = 20          # bump up; early stopping will halt when needed
+EPOCHS      = 2           # for quick testing; increase for real training
 LEARNING_RATE = 1e-3
 DROPOUT_1   = 0.25
 DROPOUT_2   = 0.30
@@ -130,7 +132,7 @@ model.summary()
 
 # ── Callbacks ────────────────────────────────────────────────────────────────
 checkpoint_cb = ModelCheckpoint(
-    filepath="model.keras",     # ✅ saves best model with the required filename
+    filepath="bangla_ocr_model.keras",     # ✅ saves best model with the required filename
     monitor="val_accuracy",
     save_best_only=True,
     verbose=1,
@@ -144,6 +146,7 @@ early_stop_cb = EarlyStopping(
 )
 
 # ── MLflow experiment ────────────────────────────────────────────────────────
+mlflow.set_tracking_uri("http://127.0.0.1:8080")
 mlflow.set_experiment("BanglaLekha-OCR")
 
 with mlflow.start_run():
@@ -162,13 +165,19 @@ with mlflow.start_run():
         "optimizer":     "Adam",
         "seed":          SEED,
     })
+    
+    # log model summary for testing the mlflow
+    model_summary_str = []
+    model.summary(print_fn=lambda x: model_summary_str.append(x))
+    mlflow.log_text("\n".join(model_summary_str), "model_summary.txt")
 
     # 2. Train
     history = model.fit(
         train_ds,
         epochs=EPOCHS,
         validation_data=val_ds,
-        callbacks=[checkpoint_cb, early_stop_cb],
+        # callbacks=[checkpoint_cb, early_stop_cb],
+        callbacks=[checkpoint_cb],
         verbose=1,
     )
 
@@ -190,7 +199,7 @@ with mlflow.start_run():
         )
 
     # 4. Final evaluation on validation set
-    val_loss, val_acc = model.evaluate(val_ds, verbose=0)
+    val_loss, val_acc = model.evaluate(val_ds, verbose=1)
     print(f"\nFinal Validation Accuracy : {val_acc * 100:.2f}%")
     print(f"Final Validation Loss     : {val_loss:.4f}")
 
@@ -199,9 +208,15 @@ with mlflow.start_run():
         "final_val_accuracy": val_acc,
     })
 
+    with open("bangla_ocr_model.pkl", "wb") as f:
+        pickle.dump(model, f)
+    print("Saved bangla ocr model.pkl ✓")
+    mlflow.log_artifact("bangla_ocr_model.pkl")
+
     # 5. Log saved artifacts
-    mlflow.log_artifact("model.keras")   # best model
-    mlflow.log_artifact("labels.json")   # class-label mapping
+    mlflow.log_artifact("bangla_ocr_model.keras")   # best model
+    mlflow.log_artifact("bangla_ocr_model.pkl")
+    # mlflow.log_artifact("labels.json")   # class-label mapping
 
     # 6. Log the Keras model in MLflow's native format (enables mlflow.pyfunc.load_model)
     mlflow.keras.log_model(model, artifact_path="keras_model")
