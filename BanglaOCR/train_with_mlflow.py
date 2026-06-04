@@ -72,9 +72,16 @@ print(f"Val   batches : {val_ds.cardinality().numpy()}")
 
 # ── Save labels.json ─────────────────────────────────────────────────────────
 # {index: class_name}  e.g. {"0": "ka", "1": "kha", ...}
+
+print("Class mapping (index → folder name):")
+for i, name in enumerate(class_names):
+    print(f"  {i}: {name}")
+
+# Save the exact mapping the model was trained with
 label_map = {str(i): name for i, name in enumerate(class_names)}
 with open("labels.json", "w", encoding="utf-8") as f:
     json.dump(label_map, f, ensure_ascii=False, indent=2)
+
 print("Saved labels.json ✓")
 
 # ── Normalize ────────────────────────────────────────────────────────────────
@@ -208,6 +215,7 @@ with mlflow.start_run():
         "final_val_accuracy": val_acc,
     })
 
+    # save the pkl model 
     with open("bangla_ocr_model.pkl", "wb") as f:
         pickle.dump(model, f)
     print("Saved bangla ocr model.pkl ✓")

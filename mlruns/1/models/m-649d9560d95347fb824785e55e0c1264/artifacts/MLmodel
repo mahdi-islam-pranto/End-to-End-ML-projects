@@ -1,0 +1,20 @@
+artifact_path: file:D:/ML projects end to end/mlruns/1/models/m-649d9560d95347fb824785e55e0c1264/artifacts
+flavors:
+  keras:
+    data: data
+    keras_backend: tensorflow
+    keras_version: 3.14.1
+    save_exported_model: false
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.keras
+    python_version: 3.13.1
+mlflow_version: 3.13.0
+model_id: m-649d9560d95347fb824785e55e0c1264
+model_size_bytes: 23338810
+model_uuid: m-649d9560d95347fb824785e55e0c1264
+prompts: null
+run_id: 08ea1a8e00ae4932af1497bd2deffdb5
+utc_time_created: '2026-06-03 07:45:31.777849'

@@ -4,8 +4,11 @@ import tensorflow as tf
 import os
 from pathlib import Path
 
+
+# base directory
+BASE_DIR = Path(__file__).resolve().parent
 # load the model from the pickle file
-with open("bangla_ocr_model.pkl", "rb") as f:
+with open(BASE_DIR / "bangla_ocr_model.pkl", "rb") as f:
     model = pickle.load(f)
     
     print("Model loaded from bangla_ocr_model.pkl")
