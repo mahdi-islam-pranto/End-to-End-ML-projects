@@ -1,0 +1,22 @@
+# local virtualenv & embeddable python — recreated inside the image
+venv/
+.venv/
+*.zip
+
+# python & tooling caches
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# IDE / OS noise
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# docs & misc artefacts that aren't needed at runtime
+*.md
+*.html
+*.bat
+*.ipynb

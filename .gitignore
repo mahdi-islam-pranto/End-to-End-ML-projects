@@ -7,3 +7,5 @@ Images/
 *.h5
 *.keras
 *.pkl
+# ignore docker files
+dockerfile
