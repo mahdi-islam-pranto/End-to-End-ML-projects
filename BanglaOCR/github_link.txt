@@ -1,0 +1,2 @@
+Repository Link:
+https://github.com/mahdi-islam-pranto/End-to-End-ML-projects/tree/main/BanglaOCR
